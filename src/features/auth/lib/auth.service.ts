@@ -2,8 +2,8 @@ import { getDb } from "@/db/database";
 import { getSession } from "./session";
 import { DBUser, User, UserRole } from "../domain/auth.types";
 import { mapDBUserToUser } from "../domain/user.mapper";
-import { SetupFormData } from "../domain/auth.validations";
-import { hashPassword } from "./password.util";
+import { LoginFormData, SetupFormData } from "../domain/auth.validations";
+import { hashPassword, verifyPassword } from "./password.util";
 
 export async function isSetupComplete(): Promise<boolean> {
   const db = await getDb();
@@ -116,4 +116,47 @@ export async function createInitialSetup(data: SetupFormData) {
   } catch (error) {
     throw error;
   }
+}
+
+export async function login(data: LoginFormData): Promise<{ userId: number }> {
+  const db = await getDb();
+
+  const user = (
+    await db.select<DBUser[]>(
+      `
+        SELECT *
+        FROM users
+        WHERE email = ?
+      `,
+      [data.email],
+    )
+  )[0];
+
+  if (!user) {
+    throw new Error("Invalid email or password");
+  }
+
+  if (!user.is_active) {
+    throw new Error("User account is inactive");
+  }
+
+  const isValidPassword = await verifyPassword(
+    data.password,
+    user.password_hash,
+  );
+
+  if (!isValidPassword) {
+    throw new Error("Invalid email or password");
+  }
+
+  await db.execute(
+    `
+      UPDATE users
+      SET last_login_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `,
+    [user.id],
+  );
+
+  return { userId: user.id };
 }

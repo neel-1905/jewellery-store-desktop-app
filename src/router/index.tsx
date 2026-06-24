@@ -5,6 +5,7 @@ import SetupGuard from "@/guards/setup-guard";
 import DashboardLayout from "@/features/dashboard/ui/dashboard-layout";
 import SetupPage from "@/features/auth/ui/setup-page";
 import LoginPage from "@/features/auth/ui/login-page";
+import DashboardPage from "@/features/dashboard/ui/dashboard-page";
 
 const router = createMemoryRouter([
   {
@@ -30,7 +31,7 @@ const router = createMemoryRouter([
                 children: [
                   {
                     index: true,
-                    element: <p>Dashboard</p>,
+                    element: <DashboardPage />,
                   },
 
                   {
