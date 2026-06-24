@@ -1,5 +1,9 @@
 import { getDb } from "@/db/database";
-import { DBCustomer, GetCustomersParams } from "../domain/customer.types";
+import {
+  Customer,
+  DBCustomer,
+  GetCustomersParams,
+} from "../domain/customer.types";
 
 import { CustomerListResponse } from "../domain/customer.types";
 import { mapDBCustomerToCustomer } from "./customer.mapper";
@@ -82,3 +86,58 @@ export const createCustomer = async (data: CustomerFormInput) => {
 
   return customerId;
 };
+
+export async function getCustomerById(customerId: number): Promise<Customer> {
+  const db = await getDb();
+
+  const customer = (
+    await db.select<DBCustomer[]>(
+      `
+        SELECT *
+        FROM customers
+        WHERE id = ?
+      `,
+      [customerId],
+    )
+  )[0];
+
+  if (!customer) {
+    throw new Error("Customer not found");
+  }
+
+  return mapDBCustomerToCustomer(customer);
+}
+
+export async function updateCustomer(
+  data: CustomerFormInput & { customerId: number },
+): Promise<void> {
+  await requireUser();
+
+  const db = await getDb();
+
+  const result = await db.execute(
+    `
+      UPDATE customers
+      SET
+        name = ?,
+        phone = ?,
+        email = ?,
+        address = ?,
+        notes = ?,
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `,
+    [
+      data.name,
+      data.phone ?? null,
+      data.email ?? null,
+      data.address ?? null,
+      data.notes ?? null,
+      data.customerId,
+    ],
+  );
+
+  if (result.rowsAffected === 0) {
+    throw new Error("Customer not found");
+  }
+}
