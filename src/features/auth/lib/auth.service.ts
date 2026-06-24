@@ -2,6 +2,8 @@ import { getDb } from "@/db/database";
 import { getSession } from "./session";
 import { DBUser, User, UserRole } from "../domain/auth.types";
 import { mapDBUserToUser } from "../domain/user.mapper";
+import { SetupFormData } from "../domain/auth.validations";
+import { hashPassword } from "./password.util";
 
 export async function isSetupComplete(): Promise<boolean> {
   const db = await getDb();
@@ -56,4 +58,62 @@ export async function getCurrentUser(): Promise<
     ...mapDBUserToUser(user),
     role_name: user.role_name,
   };
+}
+
+export async function createInitialSetup(data: SetupFormData) {
+  const db = await getDb();
+
+  const ownerRole = (
+    await db.select<{ id: number }[]>(
+      `
+        SELECT id
+        FROM roles
+        WHERE name = 'owner'
+      `,
+    )
+  )[0];
+
+  if (!ownerRole) {
+    throw new Error("Owner role not found");
+  }
+
+  const passwordHash = await hashPassword(data.user.password);
+
+  try {
+    await db.execute(
+      `
+        INSERT INTO shops (
+          name,
+          phone,
+          email,
+          address,
+          gst_number
+        )
+        VALUES (?, ?, ?, ?, ?)
+      `,
+      [
+        data.shop.name,
+        data.shop.phone,
+        data.shop.email,
+        data.shop.address,
+        data.shop.gstNumber,
+      ],
+    );
+
+    await db.execute(
+      `
+        INSERT INTO users (
+          name,
+          email,
+          password_hash,
+          role_id,
+          created_by
+        )
+        VALUES (?, ?, ?, ?, NULL)
+      `,
+      [data.user.name, data.user.email, passwordHash, ownerRole.id],
+    );
+  } catch (error) {
+    throw error;
+  }
 }

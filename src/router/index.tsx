@@ -3,6 +3,8 @@ import RootLayout from "@/components/common/root-layout";
 import AuthGuard from "@/guards/auth-guard";
 import SetupGuard from "@/guards/setup-guard";
 import DashboardLayout from "@/features/dashboard/ui/dashboard-layout";
+import SetupPage from "@/features/auth/ui/setup-page";
+import LoginPage from "@/features/auth/ui/login-page";
 
 const router = createMemoryRouter([
   {
@@ -11,11 +13,11 @@ const router = createMemoryRouter([
     children: [
       {
         path: "setup",
-        element: <p>setup page</p>,
+        element: <SetupPage />,
       },
       {
         path: "login",
-        element: <p>login page</p>,
+        element: <LoginPage />,
       },
       {
         element: <SetupGuard />,
