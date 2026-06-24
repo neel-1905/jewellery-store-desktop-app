@@ -1,6 +1,8 @@
 import { createMemoryRouter } from "react-router-dom";
 import RootLayout from "@/components/common/root-layout";
-import ProtectedLayout from "@/components/common/protected-layout";
+import AuthGuard from "@/guards/auth-guard";
+import SetupGuard from "@/guards/setup-guard";
+import DashboardLayout from "@/features/dashboard/ui/dashboard-layout";
 
 const router = createMemoryRouter([
   {
@@ -16,11 +18,41 @@ const router = createMemoryRouter([
         element: <p>login page</p>,
       },
       {
-        element: <ProtectedLayout />,
+        element: <SetupGuard />,
         children: [
           {
-            index: true,
-            element: <p>dashboard page</p>,
+            element: <AuthGuard />,
+            children: [
+              {
+                element: <DashboardLayout />,
+                children: [
+                  {
+                    index: true,
+                    element: <p>Dashboard</p>,
+                  },
+
+                  {
+                    path: "customers",
+                    element: <p>Customers</p>,
+                  },
+
+                  {
+                    path: "orders",
+                    element: <p>Orders</p>,
+                  },
+
+                  {
+                    path: "users",
+                    element: <p>Users</p>,
+                  },
+
+                  {
+                    path: "settings",
+                    element: <p>Settings</p>,
+                  },
+                ],
+              },
+            ],
           },
         ],
       },

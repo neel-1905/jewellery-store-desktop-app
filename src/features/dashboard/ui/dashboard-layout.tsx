@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 
-function ProtectedLayout() {
+function DashboardLayout() {
   return <Outlet />;
 }
 
-export default ProtectedLayout;
+export default DashboardLayout;

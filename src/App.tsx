@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { initializeDatabase } from "./db/init";
 import SplashScreen from "./components/common/splash-screen";
+import { RouterProvider } from "react-router-dom";
+import router from "./router";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -18,7 +20,7 @@ function App() {
     return <SplashScreen />;
   }
 
-  return <>Home</>;
+  return <RouterProvider router={router} />;
 }
 
 export default App;
