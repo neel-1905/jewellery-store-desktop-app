@@ -3,6 +3,9 @@ import { DBCustomer, GetCustomersParams } from "../domain/customer.types";
 
 import { CustomerListResponse } from "../domain/customer.types";
 import { mapDBCustomerToCustomer } from "./customer.mapper";
+import { CustomerFormInput } from "../domain/customer.validations";
+import { requireUser } from "@/features/auth/lib/auth.util";
+import { generateCustomerCode } from "./customer.util";
 
 export async function getCustomers({
   page,
@@ -38,29 +41,44 @@ export async function getCustomers({
   };
 }
 
-// export const addCustomer = async (customer: Customer) => {
-//   const db = await getDb();
+export const createCustomer = async (data: CustomerFormInput) => {
+  const user = await requireUser();
+  const db = await getDb();
 
-//   const result = await db.execute(
-//     `
-//       INSERT INTO customers (
-//         name,
-//         phone,
-//         email,
-//         address,
-//         created_at,
-//         updated_at
-//       ) VALUES (?, ?, ?, ?, ?, ?)
-//     `,
-//     [
-//       customer.name,
-//       customer.phone,
-//       customer.email,
-//       customer.address,
-//       new Date().toISOString(),
-//       new Date().toISOString(),
-//     ],
-//   );
+  const result = await db.execute(
+    `
+      INSERT INTO customers (
+        name,
+        phone,
+        email,
+        address,
+        notes,
+        created_by
+      )
+      VALUES (?, ?, ?, ?, ?, ?)
+    `,
+    [
+      data.name,
+      data.phone ?? null,
+      data.email ?? null,
+      data.address ?? null,
+      data.notes ?? null,
+      user.id,
+    ],
+  );
 
-//   return result;
-// };
+  const customerId = result.lastInsertId;
+
+  const customerCode = generateCustomerCode(customerId!);
+
+  await db.execute(
+    `
+      UPDATE customers
+      SET customer_code = ?
+      WHERE id = ?
+    `,
+    [customerCode, customerId],
+  );
+
+  return customerId;
+};

@@ -188,7 +188,7 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50 box-border;
+    @apply border-border box-border;
   }
   body {
     @apply bg-background text-foreground;
@@ -196,10 +196,13 @@
   html {
     @apply font-sans;
   }
+  button {
+    @apply cursor-pointer;
+  }
 }
 
 @utility app-scrollbar {
-  @apply scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100;
+  @apply scrollbar-thin scrollbar-thumb-primary/30 scrollbar-track-gray-100;
 }
 
 @utility flex-center {
