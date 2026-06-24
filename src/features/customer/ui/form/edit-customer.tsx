@@ -1,4 +1,10 @@
-const EditCustomer = ({ onSuccess }: { onSuccess?: () => void }) => {
+const EditCustomer = ({
+  customerId,
+  onSuccess,
+}: {
+  customerId: number;
+  onSuccess?: () => void;
+}) => {
   return <div>EditCustomer</div>;
 };
 
