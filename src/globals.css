@@ -128,3 +128,23 @@
     @apply font-sans;
   }
 }
+
+@utility app-scrollbar {
+  @apply scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100;
+}
+
+@utility flex-center {
+  @apply flex items-center justify-center;
+}
+
+@utility flex-col-center {
+  @apply flex flex-col items-center justify-center;
+}
+
+@utility screen-center {
+  @apply flex-center h-screen w-screen;
+}
+
+@utility screen-col-center {
+  @apply flex-col-center h-screen w-screen;
+}
