@@ -4,8 +4,12 @@ import { useQuery } from "@tanstack/react-query";
 import DynamicLucideIcon from "@/components/common/dynamic-lucide-icon";
 import { DataTableSkeleton } from "@/components/common/data-table/data-table-skeleton";
 import OrdersDataTable from "./table/orders-data-table";
+import { useState } from "react";
+import OrderFormDialog from "./form/order-form-dialog";
 
 const OrdersPage = () => {
+  const [open, setOpen] = useState(false);
+
   const { data, refetch, isLoading } = useQuery(
     getOrdersQueryOptions({ page: 1, pageSize: 10 }),
   );
@@ -21,10 +25,10 @@ const OrdersPage = () => {
           />
         </Button>
 
-        {/* <Button size={"lg"} onClick={() => setOpen(true)}>
-          <DynamicLucideIcon name="Plus" /> Add Customer
-        </Button> */}
-        {/* <CustomerFormDialog mode="create" open={open} onOpenChange={setOpen} /> */}
+        <Button size={"lg"} onClick={() => setOpen(true)}>
+          <DynamicLucideIcon name="Plus" /> Add Order
+        </Button>
+        <OrderFormDialog mode="create" open={open} onOpenChange={setOpen} />
       </div>
       {isLoading ? (
         <DataTableSkeleton />

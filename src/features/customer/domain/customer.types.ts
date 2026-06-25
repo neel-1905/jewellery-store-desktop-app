@@ -29,3 +29,15 @@ export type Customer = {
 export type GetCustomersParams = ListParams;
 
 export type CustomerListResponse = PaginatedResponse<Customer>;
+
+export type CustomerOption = {
+  id: number;
+  customerCode: string;
+  name: string;
+};
+
+export type SearchCustomersParams = {
+  search: string;
+  page: number;
+  pageSize: number;
+};

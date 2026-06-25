@@ -5,17 +5,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import CreateCustomer from "./create-customer";
-import EditCustomer from "./edit-customer";
+import CreateOrder from "./create-order";
+import EditOrder from "./edit-order";
 
-const CustomerFormDialog = ({
+const OrderFormDialog = ({
   mode,
-  customerId,
+  orderId,
   open,
   onOpenChange,
 }: {
   mode: "create" | "edit";
-  customerId?: number;
+  orderId?: number;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) => {
@@ -23,24 +23,27 @@ const CustomerFormDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent
+        className="sm:max-w-2xl"
+        onInteractOutside={(e) => {
+          e.preventDefault();
+        }}
+      >
         <DialogHeader>
-          <DialogTitle>
-            {isCreate ? "Add Customer" : "Edit Customer"}
-          </DialogTitle>
+          <DialogTitle>{isCreate ? "New Order" : "Edit Order"}</DialogTitle>
           <DialogDescription>
             {isCreate
-              ? "Add a new customer to the system"
-              : "Edit customer information"}
+              ? "Add a new order to the system"
+              : "Edit order information"}
           </DialogDescription>
         </DialogHeader>
 
         <div className="max-h-[70vh] overflow-y-auto app-scrollbar">
           {isCreate ? (
-            <CreateCustomer onSuccess={() => onOpenChange(false)} />
+            <CreateOrder onSuccess={() => onOpenChange(false)} />
           ) : (
-            <EditCustomer
-              customerId={customerId!}
+            <EditOrder
+              orderId={orderId!}
               onSuccess={() => onOpenChange(false)}
             />
           )}
@@ -50,4 +53,4 @@ const CustomerFormDialog = ({
   );
 };
 
-export default CustomerFormDialog;
+export default OrderFormDialog;

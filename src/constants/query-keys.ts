@@ -11,6 +11,9 @@ export const QUERY_KEYS = {
     list: (page: number, pageSize: number) => ["customers", page, pageSize],
 
     detail: (customerId: number) => ["customers", "detail", customerId],
+
+    search: (search: string) =>
+      [...QUERY_KEYS.customers.all, "search", search] as const,
   },
   orders: {
     all: ["orders"] as const,

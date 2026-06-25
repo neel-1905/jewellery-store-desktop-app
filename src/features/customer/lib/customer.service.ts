@@ -1,8 +1,10 @@
 import { getDb } from "@/db/database";
 import {
   Customer,
+  CustomerOption,
   DBCustomer,
   GetCustomersParams,
+  SearchCustomersParams,
 } from "../domain/customer.types";
 
 import { CustomerListResponse } from "../domain/customer.types";
@@ -10,6 +12,7 @@ import { mapDBCustomerToCustomer } from "./customer.mapper";
 import { CustomerFormInput } from "../domain/customer.validations";
 import { requireUser } from "@/features/auth/lib/auth.util";
 import { generateCustomerCode } from "./customer.util";
+import { PaginatedResponse } from "@/types/api.types";
 
 export async function getCustomers({
   page,
@@ -159,3 +162,60 @@ export const deleteCustomer = async (customerId: number) => {
     throw new Error("Customer not found");
   }
 };
+
+export async function searchCustomers(
+  params: SearchCustomersParams,
+): Promise<PaginatedResponse<CustomerOption>> {
+  await requireUser();
+
+  const db = await getDb();
+
+  const { search, page, pageSize } = params;
+
+  const searchTerm = `%${search}%`;
+
+  const [{ count }] = await db.select<{ count: number }[]>(
+    `
+      SELECT COUNT(*) as count
+      FROM customers
+      WHERE
+        name LIKE ?
+        OR customer_code LIKE ?
+    `,
+    [searchTerm, searchTerm],
+  );
+
+  const items = await db.select<
+    {
+      id: number;
+      customer_code: string;
+      name: string;
+    }[]
+  >(
+    `
+      SELECT
+        id,
+        customer_code,
+        name
+      FROM customers
+      WHERE
+        name LIKE ?
+        OR customer_code LIKE ?
+      ORDER BY name
+      LIMIT ?
+      OFFSET ?
+    `,
+    [searchTerm, searchTerm, pageSize, (page - 1) * pageSize],
+  );
+
+  return {
+    items: items.map((customer) => ({
+      id: customer.id,
+      customerCode: customer.customer_code,
+      name: customer.name,
+    })),
+    totalCount: count,
+    page,
+    pageSize,
+  };
+}

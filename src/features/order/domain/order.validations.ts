@@ -15,9 +15,9 @@ export const orderItemSchema = z.object({
 export const orderFormSchema = z.object({
   customerId: z.number(),
 
-  discount: z.number().min(0).default(0),
+  discount: z.number().min(0).default(0).optional(),
 
-  tax: z.number().min(0).default(0),
+  tax: z.number().min(0).default(0).optional(),
 
   status: z.enum(["draft", "completed", "cancelled"]),
 
