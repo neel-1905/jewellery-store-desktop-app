@@ -1,3 +1,4 @@
+import { formatDateToDDMMMYYYY } from "@/lib/date.utils";
 import { Customer, DBCustomer } from "../domain/customer.types";
 
 export function mapDBCustomerToCustomer(dbCustomer: DBCustomer): Customer {
@@ -10,7 +11,7 @@ export function mapDBCustomerToCustomer(dbCustomer: DBCustomer): Customer {
     address: dbCustomer.address,
     notes: dbCustomer.notes,
     createdBy: dbCustomer.created_by,
-    createdAt: dbCustomer.created_at,
-    updatedAt: dbCustomer.updated_at,
+    createdAt: formatDateToDDMMMYYYY(dbCustomer.created_at),
+    updatedAt: formatDateToDDMMMYYYY(dbCustomer.updated_at),
   };
 }

@@ -4,7 +4,7 @@ export const customerFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
   phone: z.string().optional(),
   email: z.email("Invalid email").optional(),
-  address: z.string().min(1, "Address is required").optional(),
+  address: z.string().optional(),
   notes: z
     .string()
     .max(500, "Notes must be less than 500 characters")

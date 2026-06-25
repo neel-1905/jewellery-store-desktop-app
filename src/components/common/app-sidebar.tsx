@@ -26,7 +26,11 @@ export default function AppSidebar() {
               <SidebarMenuButton
                 asChild
                 className="transition-colors duration-200"
-                isActive={currentPath === item.url}
+                isActive={
+                  item.url === "/"
+                    ? currentPath === "/"
+                    : currentPath.startsWith(item.url)
+                }
               >
                 <Link to={item.url}>
                   <DynamicLucideIcon name={item.icon} />

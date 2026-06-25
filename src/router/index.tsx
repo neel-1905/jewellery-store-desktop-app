@@ -7,6 +7,7 @@ import SetupPage from "@/features/auth/ui/setup-page";
 import LoginPage from "@/features/auth/ui/login-page";
 import DashboardPage from "@/features/dashboard/ui/dashboard-page";
 import CustomerPage from "@/features/customer/ui/customer-page";
+import CustomerDetailsPage from "@/features/customer/ui/customer-details-page";
 
 const router = createMemoryRouter([
   {
@@ -34,10 +35,13 @@ const router = createMemoryRouter([
                     index: true,
                     element: <DashboardPage />,
                   },
-
                   {
                     path: "customers",
                     element: <CustomerPage />,
+                  },
+                  {
+                    path: "customers/:customerId",
+                    element: <CustomerDetailsPage />,
                   },
 
                   {

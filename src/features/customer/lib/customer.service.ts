@@ -141,3 +141,21 @@ export async function updateCustomer(
     throw new Error("Customer not found");
   }
 }
+
+export const deleteCustomer = async (customerId: number) => {
+  await requireUser();
+
+  const db = await getDb();
+
+  const result = await db.execute(
+    `
+      DELETE FROM customers
+      WHERE id = ?
+    `,
+    [customerId],
+  );
+
+  if (result.rowsAffected === 0) {
+    throw new Error("Customer not found");
+  }
+};

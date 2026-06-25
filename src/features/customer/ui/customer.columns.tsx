@@ -4,6 +4,8 @@ import { Customer } from "../domain/customer.types";
 import { RowActions } from "@/components/common/data-table/row-actions";
 import CustomerFormDialog from "./form/customer-form-dialog";
 import { useState } from "react";
+import { useDeleteCustomer } from "../hooks/useDeleteCustomer";
+import { useNavigate } from "react-router-dom";
 
 export const customerColumns: ColumnDef<Customer>[] = [
   {
@@ -40,11 +42,19 @@ export const customerColumns: ColumnDef<Customer>[] = [
     cell: ({ row }) => {
       const [open, setOpen] = useState(false);
       const customer = row.original;
+      const navigate = useNavigate();
+
+      const { mutate: deleteCustomer } = useDeleteCustomer();
 
       return (
         <>
           <RowActions
             actions={[
+              {
+                label: "View",
+                icon: "Eye",
+                onClick: () => navigate(`/customers/${customer.id}`),
+              },
               {
                 label: "Edit",
                 icon: "Pencil",
@@ -54,7 +64,7 @@ export const customerColumns: ColumnDef<Customer>[] = [
                 label: "Delete",
                 icon: "Trash2",
                 variant: "destructive",
-                onClick: () => console.log("Delete", customer.id),
+                onClick: () => deleteCustomer(customer.id),
               },
             ]}
           />

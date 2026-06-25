@@ -7,8 +7,10 @@ function DashboardHeader() {
 
   const heading =
     Object.entries(headings)
-      .sort((a, b) => b[0].length - a[0].length) // longest match first
-      .find(([path]) => pathname.startsWith(path))?.[1] ?? "Dashboard";
+      .sort((a, b) => b[0].length - a[0].length)
+      .find(([path]) =>
+        path === "/" ? pathname === "/" : pathname.startsWith(path),
+      )?.[1] ?? "Dashboard";
 
   return (
     <header className="sticky top-0 w-full border-b shadow-xs px-4 py-3">
