@@ -8,6 +8,7 @@ import LoginPage from "@/features/auth/ui/login-page";
 import DashboardPage from "@/features/dashboard/ui/dashboard-page";
 import CustomerPage from "@/features/customer/ui/customer-page";
 import CustomerDetailsPage from "@/features/customer/ui/customer-details-page";
+import OrdersPage from "@/features/order/ui/orders-page";
 
 const router = createMemoryRouter([
   {
@@ -46,7 +47,7 @@ const router = createMemoryRouter([
 
                   {
                     path: "orders",
-                    element: <p>Orders</p>,
+                    element: <OrdersPage />,
                   },
 
                   {
