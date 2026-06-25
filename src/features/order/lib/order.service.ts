@@ -9,8 +9,8 @@ import {
   generateOrderNumber,
 } from "./order.utils";
 import { ListParams, PaginatedResponse } from "@/types/api.types";
-import { DBOrder, Order } from "../domain/order.types";
-import { mapDBOrderToOrder } from "./order.mapper";
+import { DBOrder, DBOrderItem, Order, OrderItem } from "../domain/order.types";
+import { mapDBOrderItemToOrderItem, mapDBOrderToOrder } from "./order.mapper";
 
 export async function createOrder(data: OrderFormData): Promise<number> {
   const user = await requireUser();
@@ -42,7 +42,7 @@ export async function createOrder(data: OrderFormData): Promise<number> {
 
   const subtotal = calculateSubtotal(items);
 
-  const total = calculateTotal(subtotal, data.discount, data.tax);
+  const total = calculateTotal(subtotal, data.discount ?? 0, data.tax ?? 0);
 
   const orderResult = await db.execute(
     `
@@ -187,5 +187,41 @@ export async function getOrders(
     totalCount: count,
     page,
     pageSize,
+  };
+}
+
+export async function getOrderById(
+  id: number,
+): Promise<Order & { items: OrderItem[] }> {
+  await requireUser();
+
+  const db = await getDb();
+
+  const [order] = await db.select<DBOrder[]>(
+    `
+      SELECT *
+      FROM orders
+      WHERE id = ?
+    `,
+    [id],
+  );
+
+  if (!order) {
+    throw new Error("Order not found");
+  }
+
+  const orderItems = await db.select<DBOrderItem[]>(
+    `
+      SELECT *
+      FROM order_items
+      WHERE order_id = ?
+      ORDER BY id
+    `,
+    [id],
+  );
+
+  return {
+    ...mapDBOrderToOrder(order),
+    items: orderItems.map(mapDBOrderItemToOrderItem),
   };
 }

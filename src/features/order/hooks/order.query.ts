@@ -1,11 +1,10 @@
-import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 
 import { QUERY_KEYS } from "@/constants/query-keys";
 
 import { ListParams } from "@/types/api.types";
 
-import { getOrders } from "../lib/order.service";
-import { searchCustomers } from "@/features/customer/lib/customer.service";
+import { getOrderById, getOrders } from "../lib/order.service";
 
 export const getOrdersQueryOptions = (params: ListParams) =>
   queryOptions({
@@ -14,26 +13,9 @@ export const getOrdersQueryOptions = (params: ListParams) =>
     queryFn: () => getOrders(params),
   });
 
-export const searchCustomersInfiniteQueryOptions = (search: string) =>
-  infiniteQueryOptions({
-    queryKey: QUERY_KEYS.customers.search(search),
+export const getOrderByIdQueryOptions = (id: number) =>
+  queryOptions({
+    queryKey: QUERY_KEYS.orders.detail(id),
 
-    initialPageParam: 1,
-
-    queryFn: ({ pageParam }) =>
-      searchCustomers({
-        search,
-        page: pageParam,
-        pageSize: 20,
-      }),
-
-    getNextPageParam: (lastPage) => {
-      const loaded = lastPage.page * lastPage.pageSize;
-
-      if (loaded >= lastPage.totalCount) {
-        return undefined;
-      }
-
-      return lastPage.page + 1;
-    },
+    queryFn: () => getOrderById(id),
   });

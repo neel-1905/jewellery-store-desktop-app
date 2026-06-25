@@ -14,9 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { searchCustomersInfiniteQueryOptions } from "../../hooks/order.query";
+
 import { Button } from "@/components/ui/button";
+import CustomerCombobox from "@/features/customer/ui/customer-combobox";
 
 const OrderForm = ({
   form,
@@ -27,12 +27,7 @@ const OrderForm = ({
   onSubmit: (data: OrderFormData) => void;
   isPending: boolean;
 }) => {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery(searchCustomersInfiniteQueryOptions(""));
-
   const { control, handleSubmit } = form;
-
-  const customers = data?.pages.flatMap((page) => page.items) ?? [];
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -42,31 +37,13 @@ const OrderForm = ({
           control={control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="customerId">Customer</FieldLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value?.toString()}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select customer" />
-                </SelectTrigger>
-                <SelectContent className="max-h-60 overflow-auto">
-                  {customers.map((customer) => (
-                    <SelectItem
-                      key={customer.id}
-                      value={customer.id.toString()}
-                    >
-                      {customer.name}
-                    </SelectItem>
-                  ))}
+              <FieldLabel>Customer</FieldLabel>
 
-                  {hasNextPage && (
-                    <Button variant={`ghost`} onClick={() => fetchNextPage()}>
-                      Load More
-                    </Button>
-                  )}
-                </SelectContent>
-              </Select>
+              <CustomerCombobox
+                value={field.value}
+                onValueChange={field.onChange}
+              />
+
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
