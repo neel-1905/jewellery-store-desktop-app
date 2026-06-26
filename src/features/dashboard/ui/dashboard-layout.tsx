@@ -5,11 +5,11 @@ import DashboardHeader from "./dashboard-header";
 
 function DashboardLayout() {
   return (
-    <SidebarProvider>
+    <SidebarProvider className="h-screen">
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className="overflow-hidden">
         <DashboardHeader />
-        <div className="p-4 flex-1 border">
+        <div className="p-4 flex-1 overflow-y-auto app-scrollbar">
           <Outlet />
         </div>
       </SidebarInset>
