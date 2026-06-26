@@ -24,7 +24,7 @@ const OrderFormDialog = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="sm:max-w-2xl"
+        className="sm:max-w-4xl"
         onInteractOutside={(e) => {
           e.preventDefault();
         }}

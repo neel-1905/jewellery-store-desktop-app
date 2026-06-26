@@ -15,6 +15,7 @@ export const orderColumns: ColumnDef<Order>[] = [
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="px-0"
       >
         Order No.
         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -29,6 +30,7 @@ export const orderColumns: ColumnDef<Order>[] = [
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="px-0"
       >
         Customer
         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -43,6 +45,7 @@ export const orderColumns: ColumnDef<Order>[] = [
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="px-0"
       >
         Total
         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -59,6 +62,7 @@ export const orderColumns: ColumnDef<Order>[] = [
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="px-0"
       >
         Status
         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -77,6 +81,7 @@ export const orderColumns: ColumnDef<Order>[] = [
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="px-0"
       >
         Created
         <ArrowUpDown className="ml-2 h-4 w-4" />

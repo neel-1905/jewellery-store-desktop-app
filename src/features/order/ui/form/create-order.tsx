@@ -20,9 +20,8 @@ const CreateOrder = ({ onSuccess }: { onSuccess: () => void }) => {
   });
 
   const onSubmit = async (data: OrderFormData) => {
-    console.log(data);
-    // await createOrder(data);
-    // onSuccess();
+    await createOrder(data);
+    onSuccess();
   };
 
   return <OrderForm form={form} onSubmit={onSubmit} isPending={isPending} />;

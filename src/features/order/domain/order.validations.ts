@@ -5,19 +5,19 @@ export const orderItemSchema = z.object({
 
   itemName: z.string().trim().min(1, "Item name is required"),
 
-  quantity: z.number().min(1),
+  quantity: z.coerce.number<number>().min(1),
 
-  unitPrice: z.number().min(0),
+  unitPrice: z.coerce.number<number>().min(0),
 
-  makingCharge: z.number().min(0),
+  makingCharge: z.coerce.number<number>().min(0),
 });
 
 export const orderFormSchema = z.object({
-  customerId: z.number(),
+  customerId: z.coerce.number<number>().min(1, "Customer is required"),
 
-  discount: z.number().min(0).default(0).optional(),
+  discount: z.coerce.number<number>().min(0),
 
-  tax: z.number().min(0).default(0).optional(),
+  tax: z.coerce.number<number>().min(0),
 
   status: z.enum(["draft", "completed", "cancelled"]),
 

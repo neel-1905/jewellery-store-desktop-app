@@ -13,7 +13,7 @@ function DashboardHeader() {
       )?.[1] ?? "Dashboard";
 
   return (
-    <header className="sticky top-0 w-full border-b shadow-xs px-4 py-3">
+    <header className="sticky top-0 w-full border-b shadow-xs px-4 py-3 bg-background">
       <div className="flex gap-2 items-center">
         <SidebarTrigger />
         <h1 className="text-2xl font-semibold">{heading}</h1>

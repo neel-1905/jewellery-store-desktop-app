@@ -17,6 +17,9 @@ import {
 
 import { Button } from "@/components/ui/button";
 import CustomerCombobox from "@/features/customer/ui/customer-combobox";
+import OrderFormItems from "./order-form-items";
+import ButtonLoader from "@/components/common/button-loader";
+import AmountDetails from "./amount-details";
 
 const OrderForm = ({
   form,
@@ -30,7 +33,7 @@ const OrderForm = ({
   const { control, handleSubmit } = form;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <FieldGroup className="grid grid-cols-2 gap-4">
         <Controller
           name="customerId"
@@ -70,6 +73,40 @@ const OrderForm = ({
           )}
         />
       </FieldGroup>
+
+      <OrderFormItems form={form} />
+
+      <FieldGroup className="grid grid-cols-2 gap-4">
+        <Controller
+          name="discount"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel>Discount</FieldLabel>
+              <Input type="number" {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          name="tax"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel>Tax</FieldLabel>
+              <Input type="number" {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+      </FieldGroup>
+
+      <AmountDetails form={form} />
+
+      <Button type="submit" size={`lg`} disabled={isPending}>
+        {isPending ? <ButtonLoader /> : "Save Order"}
+      </Button>
     </form>
   );
 };
