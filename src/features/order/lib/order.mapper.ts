@@ -22,10 +22,10 @@ export const mapDBOrderItemToOrderItem = (
   return {
     id: dbOrderItem.id,
     orderId: dbOrderItem.order_id,
-    quantity: dbOrderItem.quantity,
-    unitPrice: dbOrderItem.unit_price,
+    quantity: Number(dbOrderItem.quantity),
+    unitPrice: Number(dbOrderItem.unit_price),
     itemName: dbOrderItem.item_name,
-    lineTotal: dbOrderItem.line_total,
-    makingCharge: dbOrderItem.making_charge,
+    lineTotal: Number(dbOrderItem.line_total),
+    makingCharge: Number(dbOrderItem.making_charge),
   };
 };

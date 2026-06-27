@@ -8,7 +8,7 @@ const AmountDetails = ({
 }: {
   form: ReturnType<typeof useForm<OrderFormData>>;
 }) => {
-  const subtotal = calculateSubtotal(form.watch("items"));
+  const subtotal = calculateSubtotal(form.watch("items") ?? []);
 
   return (
     <Card className="bg-secondary">

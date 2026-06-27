@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Order } from "../../domain/order.types";
 import { RowActions } from "@/components/common/data-table/row-actions";
 import { useNavigate } from "react-router-dom";
+import OrderFormDialog from "../form/order-form-dialog";
+import { useState } from "react";
+import { useDeleteOrderMutation } from "../../hooks/useDeleteOrder.hook";
 
 export const orderColumns: ColumnDef<Order>[] = [
   {
@@ -95,29 +98,41 @@ export const orderColumns: ColumnDef<Order>[] = [
     id: "actions",
 
     cell: ({ row }) => {
+      const [open, setOpen] = useState(false);
+
       const navigate = useNavigate();
 
+      const { mutate: deleteOrder } = useDeleteOrderMutation();
+
       return (
-        <RowActions
-          actions={[
-            {
-              label: "View",
-              icon: "Eye",
-              onClick: () => navigate(`/orders/${row.original.id}`),
-            },
-            {
-              label: "Edit",
-              icon: "Pencil",
-              onClick: () => console.log("edit"),
-            },
-            {
-              label: "Delete",
-              icon: "Trash2",
-              variant: "destructive",
-              onClick: () => console.log("Delete clicked"),
-            },
-          ]}
-        />
+        <>
+          <RowActions
+            actions={[
+              {
+                label: "View",
+                icon: "Eye",
+                onClick: () => navigate(`/orders/${row.original.id}`),
+              },
+              {
+                label: "Edit",
+                icon: "Pencil",
+                onClick: () => setOpen(true),
+              },
+              {
+                label: "Delete",
+                icon: "Trash2",
+                variant: "destructive",
+                onClick: () => deleteOrder(row.original.id),
+              },
+            ]}
+          />
+          <OrderFormDialog
+            mode="edit"
+            orderId={row.original.id}
+            open={open}
+            onOpenChange={setOpen}
+          />
+        </>
       );
     },
   },

@@ -225,3 +225,120 @@ export async function getOrderById(
     items: orderItems.map(mapDBOrderItemToOrderItem),
   };
 }
+
+export async function updateOrder(
+  id: number,
+  data: OrderFormData,
+): Promise<void> {
+  await requireUser();
+
+  const db = await getDb();
+
+  const [order] = await db.select<{ id: number }[]>(
+    `
+      SELECT id
+      FROM orders
+      WHERE id = ?
+    `,
+    [id],
+  );
+
+  if (!order) {
+    throw new Error("Order not found");
+  }
+
+  const [customer] = await db.select<{ id: number }[]>(
+    `
+      SELECT id
+      FROM customers
+      WHERE id = ?
+    `,
+    [data.customerId],
+  );
+
+  if (!customer) {
+    throw new Error("Customer not found");
+  }
+
+  const subtotal = calculateSubtotal(data.items);
+
+  const total = calculateTotal(subtotal, data.discount, data.tax);
+
+  await db.execute(
+    `
+      UPDATE orders
+      SET
+        customer_id = ?,
+        subtotal = ?,
+        discount = ?,
+        tax = ?,
+        total = ?,
+        status = ?,
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `,
+    [
+      data.customerId,
+      subtotal,
+      data.discount,
+      data.tax,
+      total,
+      data.status,
+      id,
+    ],
+  );
+
+  await db.execute(
+    `
+      DELETE FROM order_items
+      WHERE order_id = ?
+    `,
+    [id],
+  );
+
+  if (data.items.length > 0) {
+    const placeholders = data.items.map(() => "(?, ?, ?, ?, ?, ?)").join(", ");
+
+    const values = data.items.flatMap((item) => [
+      id,
+      item.itemName,
+      item.quantity,
+      item.unitPrice,
+      item.makingCharge,
+      calculateLineTotal(item.quantity, item.unitPrice, item.makingCharge),
+    ]);
+
+    await db.execute(
+      `
+        INSERT INTO order_items (
+          order_id,
+          item_name,
+          quantity,
+          unit_price,
+          making_charge,
+          line_total
+        )
+        VALUES ${placeholders}
+      `,
+      values,
+    );
+  }
+}
+
+export async function deleteOrder(id: number): Promise<void> {
+  await requireUser();
+
+  const db = await getDb();
+
+  const result = await db.execute(
+    `
+      DELETE FROM orders
+      WHERE id = ?
+    `,
+    [id],
+  );
+
+  if (result.rowsAffected === 0) {
+    throw new Error("Order not found");
+  }
+}

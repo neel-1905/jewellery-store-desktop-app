@@ -4,6 +4,7 @@ import { OrderFormData } from "../../domain/order.validations";
 import { useForm } from "react-hook-form";
 import OrderForm from "./order-form";
 import { Loader2 } from "lucide-react";
+import { useUpdateOrderMutation } from "../../hooks/useUpdateOrder.hook";
 
 const EditOrder = ({
   orderId,
@@ -13,6 +14,7 @@ const EditOrder = ({
   onSuccess: () => void;
 }) => {
   const { data, isLoading } = useQuery(getOrderByIdQueryOptions(orderId));
+  const { mutateAsync: updateOrder } = useUpdateOrderMutation();
 
   const form = useForm<OrderFormData>({
     values: data,
@@ -32,7 +34,7 @@ const EditOrder = ({
   }
 
   const onSubmit = async (values: OrderFormData) => {
-    // await updateCustomer({ customerId, ...values });
+    await updateOrder({ id: orderId, data: values });
     onSuccess?.();
   };
 
